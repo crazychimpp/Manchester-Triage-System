@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { streamPatientChat } from '../lib/gemma.js';
 
-export default function PatientAssistant({ onPrefillNarrative, urgencyColor }) {
+export default function PatientAssistant({ onPrefillNarrative, urgencyColorVar }) {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
@@ -56,14 +56,14 @@ export default function PatientAssistant({ onPrefillNarrative, urgencyColor }) {
       className="card patient-assistant"
       style={{
         marginBottom: 16,
-        borderColor: urgencyColor ? `rgba(${urgencyColor}, 0.4)` : 'var(--rule)',
-        boxShadow: urgencyColor ? `0 0 15px rgba(${urgencyColor}, 0.15)` : 'none',
+        borderColor: urgencyColor || 'var(--rule)',
+        boxShadow: urgencyColor ? `0 0 15px rgba(${urgencyColor})` : 'none',
         transition: 'all 0.3s ease',
       }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
         <h3 style={{ margin: 0, fontSize: 14, textTransform: 'uppercase', letterSpacing: 0.8, color: 'var(--chalk)', display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ width: 8, height: 8, borderRadius: '50%', background: urgencyColor ? `rgb(${urgencyColor})` : 'var(--p5)' }} />
+          <span style={{ width: 8, height: 8, borderRadius: '50%', background: urgencyColor || 'var(--p5)' }} />
           Patient Intake Assistant
         </h3>
         <small style={{ color: 'var(--mute)', fontSize: 11 }}>gemma3:4b · Reassuring triage guide</small>
