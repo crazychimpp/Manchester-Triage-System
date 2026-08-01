@@ -53,4 +53,20 @@ export const EXAMPLES = [
       discriminators: { recent_problem: true },
     },
   },
+  {
+    key: 'thunderclap',
+    button: 'Thunderclap headache, 42',
+    patient: {
+      name: 'Trolley 6',
+      age: '42',
+      sex: 'Male',
+      arrivalMode: 'Walk-in',
+      flowchart: 'headache',
+      narrative:
+        'Worst headache of my life, came on suddenly like a thunderclap while exercising.',
+      history: 'No prior history of migraines or severe headaches. No regular medications.',
+      vitals: { hr: '78', sbp: '122', dbp: '78', rr: '16', spo2: '98', temp: '36.8', pain: '6', avpu: 'A', o2Device: 'Room air' },
+      discriminators: { recent_problem: true },
+    },
+  },
 ];

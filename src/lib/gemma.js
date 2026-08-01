@@ -24,6 +24,12 @@ Reply with a single JSON object and nothing else. No prose before or after, no m
 {
   "suggested_level": 1-5,
   "agrees_with_engine": true|false,
+  "extracted_signals": {
+    "onset": "speed and nature of onset extracted from narrative",
+    "character": "symptom character or pain quality",
+    "radiation": "location and radiation if present, or none",
+    "red_flag_language": ["key phrases like thunderclap, worst headache ever, etc."]
+  },
   "rationale": "two sentences at most, addressed to the nurse",
   "red_flags": ["short phrases, at most 4, omit the key if none"],
   "ask_the_patient": ["questions that would change the priority, at most 3"],
@@ -51,8 +57,11 @@ export function buildPrompt(patient, engine) {
     `Pulse ${blank(v.hr)} bpm, BP ${blank(v.sbp)}/${blank(v.dbp)} mmHg, respiratory rate ${blank(v.rr)}, SpO₂ ${blank(v.spo2)}%${v.o2Device && v.o2Device !== 'Room air' ? ` on ${v.o2Device}` : ' on room air'}, temperature ${blank(v.temp)} °C.`,
     `Conscious level ${v.avpu || 'not recorded'}. Pain score ${blank(v.pain)}/10.`,
     ``,
-    `NURSE'S NARRATIVE`,
+    `PATIENT'S OWN WORDS / NARRATIVE`,
     patient.narrative?.trim() || '(none recorded)',
+    ``,
+    `AFFECTED BODY REGIONS`,
+    patient.affectedAreas?.length ? patient.affectedAreas.join(', ') : 'None specified',
     ``,
     `PAST HISTORY AND MEDICATION`,
     patient.history?.trim() || '(none recorded)',
@@ -114,10 +123,12 @@ async function ollamaStream(prompt, onToken, signal) {
 }
 
 async function openaiStream(prompt, onToken, signal) {
-  const res = await fetch(`${BASE}/v1/chat/completions`, {
+  const res = await fetch('/api/gemma', {
     method: 'POST',
     signal,
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({
       model: MODEL,
       stream: true,
@@ -232,3 +243,70 @@ async function mockStream(prompt, onToken, signal) {
 }
 
 export const gemmaConfig = { api: API, model: MODEL };
+
+const MODEL_PATIENT = import.meta.env?.VITE_GEMMA_MODEL_PATIENT || 'gemma3:4b';
+
+const PATIENT_SYSTEM = `You are a warm, plain-language assistant helping a patient or family member describe symptoms while waiting to be triaged in an emergency department. You are NOT a clinician.
+
+Strict rules:
+- Never suggest a diagnosis.
+- Never suggest a triage priority, colour, or urgency level.
+- Never give medical advice, dosing, or treatment suggestions.
+- Your only job is to help the person describe what they're feeling clearly, and explain in plain terms what happens next.
+- If anything described sounds like a possible emergency (chest pain, trouble breathing, severe bleeding, sudden weakness, loss of consciousness, severe allergic reaction), immediately and clearly tell them to alert a staff member right now, before continuing.
+- Keep responses short (2-4 sentences), warm, and calm.`;
+
+export async function streamPatientChat(history, { onToken, signal }) {
+  const messages = [
+    { role: 'system', content: PATIENT_SYSTEM },
+    ...history.filter((m) => m.content !== '...'),
+  ];
+
+  if (API === 'mock') return mockPatientStream(onToken, signal);
+  if (API === 'openai') return openaiPatientStream(messages, onToken, signal);
+  return ollamaPatientStream(messages, onToken, signal);
+}
+
+async function ollamaPatientStream(messages, onToken, signal) {
+  const res = await fetch(`${BASE}/api/chat`, {
+    method: 'POST',
+    signal,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: MODEL_PATIENT,
+      stream: true,
+      options: { temperature: 0.4, num_predict: 300 },
+      messages,
+    }),
+  });
+  if (!res.ok) throw new Error(`Patient assistant host returned ${res.status}.`);
+  return consumeNdjson(res, onToken, (o) => o?.message?.content || '');
+}
+
+async function openaiPatientStream(messages, onToken, signal) {
+  const res = await fetch('/api/gemma', {
+    method: 'POST',
+    signal,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: MODEL_PATIENT,
+      stream: true,
+      temperature: 0.4,
+      messages,
+    }),
+  });
+  if (!res.ok) throw new Error(`Patient assistant host returned ${res.status}.`);
+  return consumeSse(res, onToken);
+}
+
+async function mockPatientStream(onToken, signal) {
+  const text = "Thanks for sharing that. Can you tell me when this started, and whether anything makes it better or worse? If this ever feels like an emergency, please tell a staff member right away.";
+  let out = '';
+  for (const ch of text) {
+    if (signal?.aborted) throw new DOMException('aborted', 'AbortError');
+    out += ch;
+    onToken(out);
+    await new Promise((r) => setTimeout(r, 4));
+  }
+  return out;
+}

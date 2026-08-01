@@ -22,6 +22,7 @@ const blankPatient = () => ({
   narrative: '',
   history: '',
   vitals: { hr: '', sbp: '', dbp: '', rr: '', spo2: '', temp: '', pain: '', avpu: '', o2Device: 'Room air' },
+  affectedAreas: [],
   discriminators: {},
 });
 

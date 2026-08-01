@@ -91,6 +91,27 @@ export default function GemmaPanel({ patient, engine, onStatus, onResult, result
 
       {result && (
         <>
+          {result.extracted_signals && (
+            <div className="g-block">
+              <div className="g-title">Extracted Narrative Signals</div>
+              <div style={{ fontSize: 12.5, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 12px' }}>
+                {result.extracted_signals.onset && <div><strong>Onset:</strong> {result.extracted_signals.onset}</div>}
+                {result.extracted_signals.character && <div><strong>Character:</strong> {result.extracted_signals.character}</div>}
+                {result.extracted_signals.radiation && <div><strong>Radiation:</strong> {result.extracted_signals.radiation}</div>}
+                {Array.isArray(result.extracted_signals.red_flag_language) && result.extracted_signals.red_flag_language.length > 0 && (
+                  <div style={{ gridColumn: 'span 2' }}>
+                    <strong>Red Flag Language:</strong>{' '}
+                    {result.extracted_signals.red_flag_language.map((ph, i) => (
+                      <span key={i} className="flag-tag" style={{ marginLeft: 4, padding: '1px 6px', background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', borderRadius: 4 }}>
+                        {ph}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           <div className={`verdict ${disagrees ? 'disagree' : 'agree'}`}>
             <span
               className="num"
