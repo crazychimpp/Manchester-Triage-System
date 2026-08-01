@@ -45,17 +45,6 @@ to run the offline demo model instead, which streams a canned response so the
 interface can be shown end to end. Demo output is labelled as such everywhere
 it appears.
 
-### Deploying to Vercel (Production-Safe)
-
-The project includes a Vercel serverless proxy function (`/api/gemma.js`) so your API key is kept strictly server-side and is never exposed in the browser bundle.
-
-```bash
-npm i -g vercel
-vercel env add SPUR_API_KEY
-# Paste your API key when prompted, selecting Production & Preview
-vercel --prod
-```
-
 ---
 
 ## The three layers
