@@ -1,3 +1,4 @@
+import PatientAssistant from './components/PatientAssistant.jsx';
 import { useMemo, useState } from 'react';
 import Masthead from './components/Masthead.jsx';
 import IntakeForm from './components/IntakeForm.jsx';
@@ -11,6 +12,7 @@ import PatientBoard from './components/PatientBoard.jsx';
 import { runTriage } from './lib/triage.js';
 import { FLOWCHARTS } from './data/mts.js';
 import { EXAMPLES } from './data/examples.js';
+import { levelVar } from './lib/colour.js';
 
 const blankPatient = () => ({
   name: '',
@@ -107,7 +109,7 @@ export default function App() {
               Blank
             </button>
           </div>
-
+          <PatientAssistant onPrefillNarrative={(txt) => set('narrative', txt)} urgencyColorVar={levelVar(engine.level)} />
           <IntakeForm patient={patient} set={set} />
         </div>
 
