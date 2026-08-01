@@ -1,0 +1,305 @@
+/* ------------------------------------------------------------------- gate */
+/* The sign-in and registration screens. Same ink, same type, one centred
+   panel — arriving at work should look like the same building as the desk. */
+
+.gate {
+  min-height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 32px 18px;
+  background:
+    radial-gradient(120% 90% at 50% -20%, rgba(76, 155, 232, 0.07), transparent 60%),
+    var(--ink);
+}
+
+.gate-panel {
+  width: 100%;
+  max-width: 372px;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 26px 24px 20px;
+}
+
+.gate-panel.wide { max-width: 470px; }
+
+.gate-mark {
+  font-family: var(--cond);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.gate-mark span {
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: var(--dim);
+  font-weight: 600;
+}
+
+.gate-title {
+  font-family: var(--cond);
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  margin: 18px 0 16px;
+}
+
+.gate-submit { width: 100%; margin-top: 14px; padding: 10px; }
+
+.gate-alt {
+  margin: 16px 0 0;
+  font-size: 12.5px;
+  color: var(--mute);
+  text-align: center;
+}
+
+.linkish {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--p5);
+  cursor: pointer;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.gate-foot {
+  margin: 18px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--dim);
+}
+
+.mono { font-family: var(--mono); color: var(--mute); }
+
+/* ------------------------------------------------------------------- gate */
+/* The sign-in door. It extends the board's identity rather than inventing a
+   second one: same ink, same IBM Plex pairing, and the five MTS priority
+   colours as the only saturated thing on screen.
+
+   Signature: the priority spine across the top edge of the panel. It is the
+   same five-segment device the triage ladder uses, so the system announces
+   what it is before anyone has typed a character. It is the one flourish
+   here; everything else stays quiet. */
+
+.gate {
+  min-height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 32px 18px;
+  background:
+    radial-gradient(1100px 520px at 50% -12%, #16232a 0%, transparent 62%),
+    var(--ink);
+}
+
+.gate-panel {
+  position: relative;
+  width: 100%;
+  max-width: 384px;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 30px 28px 24px;
+  overflow: hidden;
+  animation: gate-in 280ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+.gate-panel.wide { max-width: 552px; }
+
+@keyframes gate-in {
+  from { opacity: 0; transform: translateY(7px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gate-panel { animation: none; }
+}
+
+/* The spine. Five segments, in order, at the exact widths the ladder uses. */
+.gate-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(
+    to right,
+    var(--p1) 0 20%,
+    var(--p2) 20% 40%,
+    var(--p3) 40% 60%,
+    var(--p4) 60% 80%,
+    var(--p5) 80% 100%
+  );
+}
+
+.gate-mark {
+  font-family: var(--cond);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  flex-wrap: wrap;
+  color: var(--chalk);
+}
+
+.gate-mark span {
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  color: var(--dim);
+  font-weight: 600;
+}
+
+.gate-title {
+  font-family: var(--cond);
+  font-weight: 700;
+  font-size: 27px;
+  line-height: 1.1;
+  letter-spacing: -0.005em;
+  margin: 18px 0 20px;
+  color: var(--chalk);
+}
+
+.gate .field { margin-bottom: 13px; }
+
+.gate-submit {
+  width: 100%;
+  margin-top: 16px;
+  padding: 10px 13px;
+  font-size: 12.5px;
+}
+
+.gate-alt {
+  margin: 15px 0 0;
+  font-size: 12.5px;
+  color: var(--mute);
+  text-align: center;
+}
+
+.linkish {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--p5);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.linkish:hover { filter: brightness(1.15); }
+
+.gate-foot {
+  margin: 18px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--dim);
+}
+
+.mono { font-family: var(--mono); color: var(--mute); }
+
+/* --------------------------------------------------------- occupation pick */
+/* Occupation decides what you are allowed to see, so it gets weight rather
+   than being one row of a dropdown. Three targets also survive a gloved thumb
+   on a paramedic's tablet, which a <select> does not. */
+
+.occ {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.occ button {
+  background: var(--panel-2);
+  border: 0;
+  padding: 11px 6px 10px;
+  cursor: pointer;
+  display: grid;
+  gap: 3px;
+  justify-items: center;
+  color: var(--mute);
+  transition: background 140ms ease, color 140ms ease;
+}
+
+.occ button:hover { background: var(--raised); }
+
+.occ button[aria-pressed='true'] {
+  background: var(--raised);
+  color: var(--chalk);
+  box-shadow: inset 0 -2px 0 var(--p5);
+}
+
+.occ-name {
+  font-family: var(--cond);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.occ-note {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--dim);
+  text-align: center;
+  line-height: 1.3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .occ button { transition: none; }
+}
+
+/* ----------------------------------------------------------- password meter */
+/* Tied to the server's actual rule — twelve characters — so the bar filling is
+   the same event as the button unlocking. A meter that says "strong" while the
+   server still says no is a lie the person has to debug. */
+
+.pw-meter {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3px;
+  margin-top: 7px;
+}
+
+.pw-seg {
+  height: 3px;
+  border-radius: 1px;
+  background: var(--raised);
+  transition: background 160ms ease;
+}
+
+.pw-seg[data-on='1'] { background: var(--p1); }
+.pw-seg[data-on='2'] { background: var(--p2); }
+.pw-seg[data-on='3'] { background: var(--p3); }
+.pw-seg[data-on='4'] { background: var(--p4); }
+
+.caps {
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--p3);
+}
+
+@media (max-width: 560px) {
+  .gate { padding: 18px 12px; }
+  .gate-panel { padding: 24px 18px 20px; }
+  .gate-title { font-size: 23px; }
+  .occ { grid-template-columns: 1fr; }
+  .occ-note { text-align: left; }
+}
